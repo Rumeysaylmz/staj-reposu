@@ -1,9 +1,9 @@
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.window import WindowTypes
+
 
 import pandas as pd 
 import chromedriver_autoinstaller
@@ -26,14 +26,19 @@ driver.find_element(
     By.CSS_SELECTOR, ".cookie-permission-container .js-cookie-accept-all-button > button").click()
 
 rows = []
-with open("./competitor_comparison_template.csv") as file:
+with open("./competitor_comparison_template.csv", "r") as file:
     contents = file.read()
     rows = contents.split("\n")
+
+print(rows)
+
 
 
 result_product = []
 for row in rows[1:]:
+    print(row)
     columns = row.replace('"', "").split(",")
+    print(columns[3])
 
     competitor_count = int((len(columns) - 3) / 3)
 
@@ -41,10 +46,9 @@ for row in rows[1:]:
     for i in range(competitor_count):
         driver.get(columns[3 + 1 + (i * 3)])
         sleep(1)
-        product_price_element = driver.find_element(
-            By.CLASS_NAME, "product-detail-price")
-        product_price = product_price_element.text.split(
-            "€")[0].strip().replace(",", ".")
+        product_price_element = driver.find_element(By.CLASS_NAME, "product-detail-price")
+        product_price = product_price_element.text.split("€")[0].strip().replace(",", ".")
+        print(product_price)
 
         result_competitor.append(product_price)
     result_product.append(result_competitor)
